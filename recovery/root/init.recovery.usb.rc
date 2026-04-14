@@ -4,7 +4,7 @@
 on init
     setprop sys.usb.configfs 1
     setprop sys.usb.ffs.aio_compat 1
-    setprop vendor.usb.controller "sprd_usb"
+    setprop vendor.usb.controller "musb-hdrc.0.auto"
     setprop vendor.usb.acm_cnt 0
     setprop vendor.usb.acm_port0 ""
     setprop vendor.usb.acm_port1 ""
