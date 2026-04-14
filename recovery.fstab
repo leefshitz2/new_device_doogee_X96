@@ -1,19 +1,31 @@
-# === Стандартные разделы загрузчика (Unisoc-specific) ===
+# ================================================
+# RECOVERY FSTAB FOR DOOGEE X96 (UNISOC SC9863A)
+# A/B DEVICE WITH VIRTUAL A/B
+# ================================================
+
+# Bootloader and misc partitions (WITH slotselect for A/B)
+/dev/block/by-name/boot                  /boot               emmc    defaults                        slotselect
+/dev/block/by-name/misc                  /misc               emmc    defaults                        defaults
+/dev/block/by-name/dtbo                  /dtbo               emmc    defaults                        slotselect
+/dev/block/by-name/vbmeta                /vbmeta             emmc    defaults                        slotselect
+/dev/block/by-name/vbmeta_system         /vbmeta_system      emmc    defaults                        slotselect
+/dev/block/by-name/vbmeta_vendor         /vbmeta_vendor      emmc    defaults                        slotselect
+/dev/block/by-name/persist               /persist            emmc    defaults                        defaults
+
+# Unisoc-specific partitions
 /dev/block/by-name/spl                   /spl                emmc    defaults                        defaults
 /dev/block/by-name/spl_bk                /spl_bk             emmc    defaults                        defaults
-/dev/block/by-name/uboot_log             /uboot_log          emmc    defaults                        defaults
 /dev/block/by-name/uboot                 /uboot              emmc    defaults                        defaults
 /dev/block/by-name/sml                   /sml                emmc    defaults                        defaults
 /dev/block/by-name/trustos               /tos                emmc    defaults                        defaults
 /dev/block/by-name/teecfg                /teecfg             emmc    defaults                        defaults
-/dev/block/by-name/vbmeta                /vbmeta             emmc    defaults                        defaults
-/dev/block/by-name/vbmeta_system         /vbmeta_system      emmc    defaults                        defaults
-/dev/block/by-name/vbmeta_vendor         /vbmeta_vendor      emmc    defaults                        defaults
-/dev/block/by-name/vbmeta_product        /vbmeta_product     emmc    defaults                        defaults
-/dev/block/by-name/vbmeta_system_ext     /vbmeta_system_ext  emmc    defaults                        defaults
-/dev/block/by-name/dtbo                  /dtbo               emmc    defaults                        defaults
+/dev/block/by-name/logo                  /logo               emmc    defaults                        defaults
+/dev/block/by-name/fbootlogo             /fbootlogo          emmc    defaults                        defaults
+/dev/block/by-name/socko                 /socko              ext4    rw,noatime                      wait,check
+/dev/block/by-name/odmko                 /odmko              ext4    rw,noatime                      wait,check
+/dev/block/by-name/prodnv                /mnt/vendor         ext4    rw,noatime                      wait,check
 
-# === Модемные разделы ===
+# Modem partitions
 /dev/block/by-name/l_ldsp                /ltedsp             emmc    defaults                        defaults
 /dev/block/by-name/l_gdsp                /ltegdsp            emmc    defaults                        defaults
 /dev/block/by-name/l_modem               /ltemodem           emmc    defaults                        defaults
@@ -27,34 +39,27 @@
 /dev/block/by-name/gpsbd                 /gnssbdmodem        emmc    defaults                        defaults
 /dev/block/by-name/pm_sys                /pmsys              emmc    defaults                        defaults
 
-# === Основные системные разделы ===
-/dev/block/by-name/misc                  /misc               emmc    defaults                        defaults
-/dev/block/by-name/boot                  /boot               emmc    defaults                        defaults
-/dev/block/by-name/persist               /persist            emmc    defaults                        defaults
-/dev/block/by-name/logo                  /logo               emmc    defaults                        defaults
-/dev/block/by-name/fbootlogo             /fbootlogo          emmc    defaults                        defaults
-/dev/block/by-name/socko                 /socko              ext4    rw,noatime                      wait,check
-/dev/block/by-name/odmko                 /odmko              ext4    rw,noatime                      wait,check
-/dev/block/by-name/prodnv                /mnt/vendor         ext4    rw,noatime                      wait,check
+# Metadata for FBE encryption
+/dev/block/by-name/metadata              /metadata           ext4    rw,noatime,nosuid,nodev         wait,check,formattable
 
-# === ДИНАМИЧЕСКИЕ РАЗДЕЛЫ (САМОЕ ВАЖНОЕ) ===
-# ВНИМАНИЕ: На Unisoc SC9863A НЕТ /dev/block/by-name/super!
-# Разделы маппятся напрямую в device-mapper. Указываем их как logical.
-/system                                 /system_root        ext4    ro,logical                      wait,slotselect,avb=vbmeta_system,first_stage_mount
-/system_ext                             /system_ext         ext4    ro,logical                      wait,slotselect,avb=vbmeta_system_ext,first_stage_mount
-/vendor                                 /vendor             ext4    ro,logical                      wait,slotselect,avb=vbmeta_vendor,first_stage_mount
-/product                                /product            ext4    ro,logical                      wait,slotselect,avb=vbmeta_product,first_stage_mount
+# ================================================
+# DYNAMIC PARTITIONS (WITH slotselect FOR A/B)
+# MOUNT AS /system_root FOR SAR
+# ================================================
+system                                   /system_root        ext4    ro,logical                      wait,slotselect,avb=vbmeta_system,first_stage_mount
+system_ext                               /system_ext         ext4    ro,logical                      wait,slotselect,avb=vbmeta_system_ext,first_stage_mount
+vendor                                   /vendor             ext4    ro,logical                      wait,slotselect,avb=vbmeta_vendor,first_stage_mount
+product                                  /product            ext4    ro,logical                      wait,slotselect,avb=vbmeta_product,first_stage_mount
 
-# === METADATA для шифрования ===
-/dev/block/by-name/metadata              /metadata           ext4    rw,noatime,nosuid,nodev         wait,check,formattable,first_stage_mount
-
-# === DATA (FBE с метаданными в /metadata) ===
+# ================================================
+# USERDATA WITH FBE (FILE-BASED ENCRYPTION)
+# ================================================
 /dev/block/by-name/userdata              /data               f2fs    rw,noatime,nosuid,nodev,discard,inline_xattr,inline_data,reservedsize=128M    latemount,wait,check,formattable,fileencryption=ice,keydirectory=/metadata/vold/metadata_encryption,quota
 /dev/block/by-name/userdata              /data/media         f2fs    rw,noatime,nosuid,nodev,discard,inline_xattr,inline_data,reservedsize=128M    latemount,wait,check,flags=display="Internal Storage";symlink=/sdcard
 
-# === Внешняя SD-карта ===
+# ================================================
+# EXTERNAL STORAGE
+# ================================================
 /dev/block/mmcblk1p1                     /external_sd        vfat    rw                              wait,check
 /dev/block/mmcblk1                       /external_sd        auto    rw                              wait,check
-
-# === USB-OTG ===
 /dev/block/sda1                          /usb_otg            vfat    rw                              wait,check
