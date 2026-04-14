@@ -1,3 +1,33 @@
+# Doogee X96 system properties
+ro.product.brand=DOOGEE
+ro.product.model=X96
+ro.product.manufacturer=DOOGEE
+ro.product.device=X96
+
+# Unisoc specific
+ro.board.platform=sp9863a
+ro.chipname=SC9863A
 ro.product.hardware=s9863a1h10_go_32b
+ro.vendor.sprd.modem.version=FM_BASE_18A_RLS2.0_SPM_W22.08.6_P1
+
+# USB Configuration
+persist.sys.usb.config=mtp,adb
 ro.sys.usb.storage.type=adb,mtp
 sys.usb.controller=musb-hdrc.0.auto
+ro.usb.vendor.string=DOOGEE
+ro.usb.product.string=X96
+
+# Graphics
+ro.sf.lcd_density=320
+
+# Dalvik
+dalvik.vm.heapstartsize=8m
+dalvik.vm.heapgrowthlimit=192m
+dalvik.vm.heapsize=512m
+dalvik.vm.heaptargetutilization=0.75
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapmaxfree=8m
+
+# Performance
+ro.config.low_ram=true
+persist.sys.force_highendgfx=false
