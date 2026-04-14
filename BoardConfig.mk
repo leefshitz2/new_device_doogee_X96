@@ -1,3 +1,5 @@
+# Copyright (C) 2024 The Android Open Source Project
+
 DEVICE_PATH := device/doogee/X96
 
 # For building with minimal manifest
@@ -79,10 +81,16 @@ BOARD_USES_RECOVERY_AS_BOOT := true
 TW_HAS_NO_RECOVERY_PARTITION := true
 
 # ============================================
-# SYSTEM-AS-ROOT (ДЛЯ ДИНАМИЧЕСКИХ РАЗДЕЛОВ)
+# SYSTEM-AS-ROOT (ДЛЯ VIRTUAL A/B)
 # ============================================
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 BOARD_SUPPRESS_SECURE_ERASE := true
+
+# ============================================
+# VIRTUAL A/B (УСТРОЙСТВО ПОДДЕРЖИВАЕТ)
+# ============================================
+BOARD_VIRTUAL_AB := true
+ENABLE_VIRTUAL_AB := true
 
 # ============================================
 # ДИНАМИЧЕСКИЕ РАЗДЕЛЫ (SUPER)
